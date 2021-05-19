@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Post validation{% endblock %}
+
+{% block body %}
+    {% for message in app.flashes('message') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    {% for post in posts %}
+        <h2>{{ post.content }}</h2>
+        <p>Request of {{ post.member.email }}</p>
+
+        {% if workflow_can(post, 'to_superadmin_ok') %}
+            <a type="button" class="btn btn-success btn-lg" href="{{ path('app_validation', {'id': post.id}) }}"></a>
+        {% endif %}
+
+        {% if workflow_can(post, 'to_admin_ok') %}
+            <a type="button" class="btn btn-success btn-lg" href="{{ path('app_validation', {'id': post.id}) }}"></a>
+        {% endif %}
+
+        {% if workflow_can(post, 'to_order') %}
+            <a type="button" class="btn btn-success btn-lg" href="{{ path('app_validation', {'id': post.id}) }}"></a>
+        {% endif %}
+
+        {% if workflow_can(post, 'to_ordered') %}
+            <a type="button" class="btn btn-success btn-lg" href="{{ path('app_validation', {'id': post.id}) }}"></a>
+        {% endif %}
+
+        {% if workflow_can(post, 'to_authorized') %}
+            <a type="button" class="btn btn-success btn-lg" href="{{ path('app_validation', {'id': post.id}) }}"></a>
+        {% endif %}
+
+    {% endfor %}
+{% endblock %}

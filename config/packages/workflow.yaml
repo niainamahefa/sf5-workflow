@@ -1,0 +1,46 @@
+framework:
+    workflows:
+        post_request:
+            type: 'workflow'
+            audit_trail:
+                enabled: true
+            marking_store:
+                type: 'method'
+                property: 'status'
+            supports:
+                - App\Entity\Post
+            initial_marking: request
+            places:
+                - request
+                - superadmin_validation_pending
+                - superadmin_ok
+                - admin_validation_pending
+                - admin_ok
+                - order
+                - ordered
+                - authorized
+            transitions:
+                to_pending:
+                    from: request
+                    to: [superadmin_validation_pending, admin_validation_pending]
+                to_superadmin_ok:
+                    guard: "is_granted('ROLE_SUPERADMIN')"
+                    from: superadmin_validation_pending
+                    to: superadmin_ok
+                to_admin_ok:
+                    guard: "is_granted('ROLE_ADMIN')"
+                    from: admin_validation_pending
+                    to: admin_ok
+                to_order:
+                    guard: "is_granted('ROLE_SUPERUSER')"
+                    from: [superadmin_ok, admin_ok]
+                    to: order
+                to_ordered:
+                    guard: "is_granted('ROLE_SUPERUSER')"
+                    from: order
+                    to: ordered
+                to_authorized:
+                    guard: "is_granted('ROLE_SUPERUSER')"
+                    from: ordered
+                    to: authorized
+
